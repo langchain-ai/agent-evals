@@ -90,7 +90,7 @@ To evaluate the agent, you can run `math/run_eval.py` script. This will create n
 python math/run_eval.py
 ```
 
-By default this will use the `Math problems` dataset & `Calc-you-later` agent by LangChain.
+By default this will use the `Math problems` dataset & `Calc you later` agent by LangChain.
 
 **Advanced usage:**
 
@@ -98,7 +98,7 @@ You can pass the following parameters to customize the evaluation:
 
 - `--dataset-id`: ID of the dataset to evaluate against. Defaults to `Math problems` dataset.
 - `--graph-id`: graph ID of the agent to evaluate. Defaults to `agent`.
-- `--agent-url`: URL of the deployed agent to evaluate. Defaults to `Calc-you-later` deployment.
+- `--agent-url`: URL of the deployed agent to evaluate. Defaults to `Calc you later` deployment.
 - `--experiment-prefix`: Prefix for the experiment name.
 - `--min-score`: Minimum acceptable score for evaluation. If specified, the script will raise an assertion error if the average score is below this threshold.
 
