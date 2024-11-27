@@ -9,7 +9,7 @@ from langgraph.pregel.remote import RemoteGraph
 
 client = Client()
 
-DEFAULT_DATASET_ID = "85c855de-0589-4586-a834-848618b652a1"
+DEFAULT_DATASET_ID = "35e5149b-aef4-48a6-9ce1-9bea2022ae63"
 DEFAULT_GRAPH_ID = "agent"
 DEFAULT_AGENT_URL = (
     "https://api.smith.langchain.com/marketplace/b5152a8c-e0ed-4ed9-9bac-9c3cb7566c8d"

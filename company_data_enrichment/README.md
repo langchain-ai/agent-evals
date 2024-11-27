@@ -51,7 +51,7 @@ High level, company data enrichment agents are expected to take a company and a 
 
 There are two public datasets available for evaluation in LangSmith:
 
-- [Public companies](https://smith.langchain.com/public/bb139cd5-c656-4323-9bea-84cb7bf6080a/d). This dataset has a list of publicly traded companies to extract the following fields for:
+- [Public companies](https://smith.langchain.com/public/640df79c-1831-494e-8824-d7300205dc8e/d). This dataset has a list of publicly traded companies to extract the following fields for:
   - `name`
   - `description`
   - `website`
@@ -130,7 +130,7 @@ There are two public datasets available for evaluation in LangSmith:
   } 
   ```
 
-- [Startups](https://smith.langchain.com/public/2b0a2f35-9d7c-40f2-a24f-5dec877dec1e/d). This dataset has a list of AI startups to extract the following fields for:
+- [Startups](https://smith.langchain.com/public/afabd12a-62fa-4c09-b083-6b1742b4cc3a/d). This dataset has a list of AI startups to extract the following fields for:
 
   - `name`
   - `description`

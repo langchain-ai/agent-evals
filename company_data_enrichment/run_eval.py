@@ -27,7 +27,7 @@ EXACT_MATCH_FIELDS = (
 FUZZY_MATCH_FIELDS = ("name", "ceo")
 LONG_TEXT_FIELDS = ("description",)
 
-DEFAULT_DATASET_ID = "51173811-4ace-422d-9372-301c084d8d29"
+DEFAULT_DATASET_ID = "762a2bfa-125d-492c-86d8-9bd115701171"
 DEFAULT_GRAPH_ID = "company_maistro"
 DEFAULT_AGENT_URL = (
     "https://api.smith.langchain.com/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
