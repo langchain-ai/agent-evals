@@ -10,21 +10,14 @@ import argparse
 # Defaults
 EXPERIMENT_PREFIX = "People mAIstro "
 TOLERANCE = 0.15  # should match within 15%
-NUMERIC_FIELDS = ("Years-Experience")
+NUMERIC_FIELDS = ("Years-Experience",)
 FUZZY_MATCH_FIELDS = ("Role","Company")
-LIST_OF_STRING_FIELDS = ("Prior-Companies")
+LIST_OF_STRING_FIELDS = ("Prior-Companies",)
 DEFAULT_DATASET_NAME = "Person Researcher Dataset"
 DEFAULT_GRAPH_ID = "people_maistro"
 DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/cc9aac58-f334-4545-80d9-59300faf8aa2"
 
-os.environ["OPENAI_API_KEY"] = "..."
-os.environ["LANGSMITH_API_KEY"] = "..."
-os.environ["TAVILY_API_KEY"] = "..."
-
 client = Client()
-
-# Load dataset
-people_dataset = client.read_dataset(dataset_name="Person Researcher Dataset")
 
 # Run some evals manually
 MAIN_PROMPT = """You are a people researcher doing web research on behalf of a user. You are trying to collect this information about people:
