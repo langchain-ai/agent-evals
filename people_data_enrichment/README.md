@@ -181,6 +181,12 @@ python company_data_enrichment/run_eval.py --experiment-prefix "My custom prefix
 
 ### Using different schema
 
+#### Different Extraction Schema
+
+If you want to use a different extraction schema, you can modify the `extraction_schema` variable in `run_eval.py` to match whatever extraction schema you are looking for.
+
+#### Different Agent Schema
+
 If your agent uses a schema that's different from the [example one above](#agent-schema), you can modify `make_agent_runner` in `run_eval.py` in the following way:
 
 ```python
