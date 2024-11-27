@@ -15,11 +15,11 @@ FUZZY_MATCH_FIELDS = ("Role","Company")
 LIST_OF_STRING_FIELDS = ("Prior-Companies")
 DEFAULT_DATASET_NAME = "Person Researcher Dataset"
 DEFAULT_GRAPH_ID = "people_maistro"
-DEFAULT_AGENT_URL = "https://ht-abandoned-cynic-27-d4d35e0b052a570a9c5cb83f703881f4.default.us.langgraph.app"
+DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/cc9aac58-f334-4545-80d9-59300faf8aa2"
 
-os.environ["OPENAI_API_KEY"] = "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"
-os.environ["LANGSMITH_API_KEY"] = "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"
-os.environ["TAVILY_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "..."
+os.environ["LANGSMITH_API_KEY"] = "..."
+os.environ["TAVILY_API_KEY"] = "..."
 
 client = Client()
 
@@ -40,9 +40,6 @@ You have access to the following tools:
 - `Info`: call this when you are done and have gathered all the relevant info
 
 Gather info for this person, company: {topic}"""
-
-
-graph = RemoteGraph("people_maistro", url="https://ht-abandoned-cynic-27-d4d35e0b052a570a9c5cb83f703881f4.default.us.langgraph.app", api_key=None)
 
 extraction_schema = {
     "type": "object",
