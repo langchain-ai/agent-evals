@@ -1,4 +1,4 @@
-# Agent Marketplace Evals
+# Agent Evals
 
 This is a collection of evaluation scripts for evaluating agents.
 
