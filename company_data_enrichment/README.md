@@ -262,7 +262,7 @@ By default this will use the `Public companies` dataset & `Company mAIstro` agen
 
 You can pass the following parameters to customize the evaluation:
 
-- `--dataset-id`: ID of the dataset to evaluate against. Defaults to `Public companies` dataset.
+- `--dataset-name`: Name of the dataset to evaluate against. Defaults to `Public Company Data Enrichment` dataset.
 - `--graph-id`: graph ID of the agent to evaluate. Defaults to `company_maistro`.
 - `--agent-url`: URL of the deployed agent to evaluate. Defaults to `Company mAIstro` deployment.
 - `--experiment-prefix`: Prefix for the experiment name.

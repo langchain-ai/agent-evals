@@ -9,7 +9,7 @@ from langgraph.pregel.remote import RemoteGraph
 
 client = Client()
 
-DEFAULT_DATASET_ID = "35e5149b-aef4-48a6-9ce1-9bea2022ae63"
+DEFAULT_DATASET_NAME = "Math Evaluation Dataset"
 DEFAULT_GRAPH_ID = "agent"
 DEFAULT_AGENT_URL = (
     "https://api.smith.langchain.com/marketplace/b5152a8c-e0ed-4ed9-9bac-9c3cb7566c8d"
@@ -50,13 +50,13 @@ def get_agent_metadata(graph_id: str, agent_url: str):
 
 def run_eval(
     *,
-    dataset_id: str,
+    dataset_name: str,
     graph_id: str = DEFAULT_GRAPH_ID,
     agent_url: str = DEFAULT_AGENT_URL,
     experiment_prefix: Optional[str] = None,
     min_score: Optional[float] = None,
 ) -> EvaluationResults:
-    dataset = client.read_dataset(dataset_id=dataset_id)
+    dataset = client.read_dataset(dataset_name=dataset_name)
     run_agent = make_agent_runner(graph_id, agent_url)
     results = evaluate(
         run_agent,
@@ -82,10 +82,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset-id",
+        "--dataset-name",
         type=str,
-        default=DEFAULT_DATASET_ID,
-        help="ID of the dataset to evaluate against",
+        default=DEFAULT_DATASET_NAME,
+        help="Name of the dataset to evaluate against",
     )
     parser.add_argument(
         "--graph-id",
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_eval(
-        dataset_id=args.dataset_id,
+        dataset_name=args.dataset_name,
         graph_id=args.graph_id,
         agent_url=args.agent_url,
         experiment_prefix=args.experiment_prefix,

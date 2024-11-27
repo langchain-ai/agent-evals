@@ -27,7 +27,7 @@ EXACT_MATCH_FIELDS = (
 FUZZY_MATCH_FIELDS = ("name", "ceo")
 LONG_TEXT_FIELDS = ("description",)
 
-DEFAULT_DATASET_ID = "762a2bfa-125d-492c-86d8-9bd115701171"
+DEFAULT_DATASET_NAME = "Public Company Data Enrichment"
 DEFAULT_GRAPH_ID = "company_maistro"
 DEFAULT_AGENT_URL = (
     "https://api.smith.langchain.com/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
@@ -136,13 +136,13 @@ def get_agent_metadata(graph_id: str, agent_url: str):
 
 def run_eval(
     *,
-    dataset_id: str,
+    dataset_name: str,
     graph_id: str = DEFAULT_GRAPH_ID,
     agent_url: str = DEFAULT_AGENT_URL,
     experiment_prefix: Optional[str] = None,
     min_score: Optional[float] = None,
 ) -> EvaluationResults:
-    dataset = client.read_dataset(dataset_id=dataset_id)
+    dataset = client.read_dataset(dataset_name=dataset_name)
     run_agent = make_agent_runner(graph_id, agent_url)
     results = evaluate(
         run_agent,
@@ -168,10 +168,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--dataset-id",
+        "--dataset-name",
         type=str,
-        default=DEFAULT_DATASET_ID,
-        help="ID of the dataset to evaluate against",
+        default=DEFAULT_DATASET_NAME,
+        help="Name of the dataset to evaluate against",
     )
     parser.add_argument(
         "--graph-id",
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_eval(
-        dataset_id=args.dataset_id,
+        dataset_name=args.dataset_name,
         graph_id=args.graph_id,
         agent_url=args.agent_url,
         experiment_prefix=args.experiment_prefix,
