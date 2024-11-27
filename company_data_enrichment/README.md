@@ -10,25 +10,25 @@ Company data enrichment agents are expected to have the following schema:
 
     ```json
     {
-    "type": "object",
-    "title": "company_data_enrichment_input",
-    "required": [
-        "company"
-    ],
-    "properties": {
-        "company": {
-        "type": "string",
-        "title": "Company"
-        },
-        "extraction_schema": {
-        "type": "object",
-        "title": "Extraction Schema"
-        },
-        "user_notes": {
-        "type": "string",
-        "title": "User Notes",
-        },
-    }
+      "type": "object",
+      "title": "company_data_enrichment_input",
+      "required": [
+          "company"
+      ],
+      "properties": {
+          "company": {
+          "type": "string",
+          "title": "Company"
+          },
+          "extraction_schema": {
+          "type": "object",
+          "title": "Extraction Schema"
+          },
+          "user_notes": {
+          "type": "string",
+          "title": "User Notes",
+          },
+      }
     }
     ```
 
@@ -36,17 +36,17 @@ Company data enrichment agents are expected to have the following schema:
 
     ```json
     {
-    "type": "object",
-    "title": "company_data_enrichment_output",
-    "required": [
-        "info"
-    ],
-    "properties": {
-        "info": {
-        "type": "object",
-        "title": "Info"
-        }
-    }
+      "type": "object",
+      "title": "company_data_enrichment_output",
+      "required": [
+          "info"
+      ],
+      "properties": {
+          "info": {
+          "type": "object",
+          "title": "Info"
+          }
+      }
     }
     ```
 
