@@ -10,25 +10,25 @@ Company data enrichment agents are expected to have the following schema:
 
     ```json
     {
-    "type": "object",
-    "title": "company_data_enrichment_input",
-    "required": [
-        "company"
-    ],
-    "properties": {
-        "company": {
-        "type": "string",
-        "title": "Company"
-        },
-        "extraction_schema": {
-        "type": "object",
-        "title": "Extraction Schema"
-        },
-        "user_notes": {
-        "type": "string",
-        "title": "User Notes",
-        },
-    }
+      "type": "object",
+      "title": "company_data_enrichment_input",
+      "required": [
+          "company"
+      ],
+      "properties": {
+          "company": {
+          "type": "string",
+          "title": "Company"
+          },
+          "extraction_schema": {
+          "type": "object",
+          "title": "Extraction Schema"
+          },
+          "user_notes": {
+          "type": "string",
+          "title": "User Notes",
+          },
+      }
     }
     ```
 
@@ -36,17 +36,17 @@ Company data enrichment agents are expected to have the following schema:
 
     ```json
     {
-    "type": "object",
-    "title": "company_data_enrichment_output",
-    "required": [
-        "info"
-    ],
-    "properties": {
-        "info": {
-        "type": "object",
-        "title": "Info"
-        }
-    }
+      "type": "object",
+      "title": "company_data_enrichment_output",
+      "required": [
+          "info"
+      ],
+      "properties": {
+          "info": {
+          "type": "object",
+          "title": "Info"
+          }
+      }
     }
     ```
 
@@ -151,73 +151,73 @@ There are two public datasets available for evaluation in LangSmith:
 
   ```json
   {
-  "company": "LangChain",
-  "extraction_schema": {
-    "type": "object",
-    "title": "company_info",
-    "required": [
-      "name",
-      "description",
-      "website",
-      "crunchbase_profile",
-      "year_founded",
-      "ceo",
-      "total_funding_mm_usd",
-      "latest_round",
-      "latest_round_date",
-      "latest_round_amount_mm_usd"
-    ],
-    "properties": {
-      "ceo": {
-        "type": "string",
-        "description": "Name of the company's CEO"
+    "company": "LangChain",
+    "extraction_schema": {
+      "type": "object",
+      "title": "company_info",
+      "required": [
+        "name",
+        "description",
+        "website",
+        "crunchbase_profile",
+        "year_founded",
+        "ceo",
+        "total_funding_mm_usd",
+        "latest_round",
+        "latest_round_date",
+        "latest_round_amount_mm_usd"
+      ],
+      "properties": {
+        "ceo": {
+          "type": "string",
+          "description": "Name of the company's CEO"
+        },
+        "name": {
+          "type": "string",
+          "description": "Official company name"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Company's official website URL"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the company and its activities"
+        },
+        "latest_round": {
+          "type": "string",
+          "description": "Type of the most recent funding round (e.g., Series A, Seed, etc.)"
+        },
+        "year_founded": {
+          "type": "integer",
+          "minimum": 1800,
+          "description": "Year when the company was founded"
+        },
+        "latest_round_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of the most recent funding round (YYYY-MM-DD)"
+        },
+        "crunchbase_profile": {
+          "type": "string",
+          "format": "uri",
+          "description": "Company's Crunchbase profile URL"
+        },
+        "total_funding_mm_usd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total funding raised in millions of USD"
+        },
+        "latest_round_amount_mm_usd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Amount raised in the most recent funding round in millions of USD"
+        }
       },
-      "name": {
-        "type": "string",
-        "description": "Official company name"
-      },
-      "website": {
-        "type": "string",
-        "format": "uri",
-        "description": "Company's official website URL"
-      },
-      "description": {
-        "type": "string",
-        "description": "Brief description of the company and its activities"
-      },
-      "latest_round": {
-        "type": "string",
-        "description": "Type of the most recent funding round (e.g., Series A, Seed, etc.)"
-      },
-      "year_founded": {
-        "type": "integer",
-        "minimum": 1800,
-        "description": "Year when the company was founded"
-      },
-      "latest_round_date": {
-        "type": "string",
-        "format": "date",
-        "description": "Date of the most recent funding round (YYYY-MM-DD)"
-      },
-      "crunchbase_profile": {
-        "type": "string",
-        "format": "uri",
-        "description": "Company's Crunchbase profile URL"
-      },
-      "total_funding_mm_usd": {
-        "type": "number",
-        "minimum": 0,
-        "description": "Total funding raised in millions of USD"
-      },
-      "latest_round_amount_mm_usd": {
-        "type": "number",
-        "minimum": 0,
-        "description": "Amount raised in the most recent funding round in millions of USD"
-      }
-    },
-    "description": "Company information"
-  }
-} 
+      "description": "Company information"
+    }
+  } 
   ```
 
   Example output:
