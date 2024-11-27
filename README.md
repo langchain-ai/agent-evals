@@ -12,8 +12,8 @@ Each folder in the repo contains:
 ## Available evals
 
 Below is the list of currently available evals:
-| Task | Dataset | Description | Input Example | Output Example |
+| Task | Dataset(s) | Description | Input Example | Output Example |
 |------|----------|-------------|---------------|----------------|
 | [Math](./math) | [Math Problems](https://smith.langchain.com/public/14f42e3e-4272-4609-8322-4beaff2f2eef/d) | Solve math problems and return numerical answers | `{"Question": "Find the second derivative of f(x)=ln(x) and evaluate it at x=0.5."}` | `{"Answer": "-4"}` |
-| [Company Data Enrichment](./company_data_enrichment) | [Public Companies](https://smith.langchain.com/public/bb139cd5-c656-4323-9bea-84cb7bf6080a/d) | Extract structured company information like CEO, headquarters, employee count etc. | `{"company": "Nvidia", "extraction_schema": {...}}` | `{"info": {"ceo": "Jensen Huang", "name": "Nvidia Corporation", ...}}` |
-| [People Data Enrichment](./people_data_enrichment) | [People Dataset](https://smith.langchain.com/public/bb139cd5-c656-4323-9bea-84cb7bf6080a/d) | Extract structured information about people like work experience, role, company etc. | `{"person": {"name": "Erick Friis", "email": "erick@langchain.dev", ...}, "extraction_schema": {...}}` | `{"extracted_information": {"Years-Experience": 10, "Company": "LangChain", ...}}` |
+| [Company Data Enrichment](./company_data_enrichment) | [Public Companies](https://smith.langchain.com/public/bb139cd5-c656-4323-9bea-84cb7bf6080a/d), [Startups](https://smith.langchain.com/public/2b0a2f35-9d7c-40f2-a24f-5dec877dec1e/d) | Extract structured company information like CEO, headquarters, employee count etc. | `{"company": "Nvidia", "extraction_schema": {...}}` | `{"info": {"ceo": "Jensen Huang", "name": "Nvidia Corporation", ...}}` |
+| [People Data Enrichment](./people_data_enrichment) | [People Dataset](https://smith.langchain.com/public/9160e39c-44d1-40f4-8cab-53ed90307833/d) | Extract structured information about people like work experience, role, company etc. | `{"person": {"name": "Erick Friis", "email": "erick@langchain.dev", ...}, "extraction_schema": {...}}` | `{"extracted_information": {"Years-Experience": 10, "Company": "LangChain", ...}}` |
