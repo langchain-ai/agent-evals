@@ -28,10 +28,8 @@ FUZZY_MATCH_FIELDS = ("name", "ceo")
 LONG_TEXT_FIELDS = ("description",)
 
 DEFAULT_DATASET_ID = "51173811-4ace-422d-9372-301c084d8d29"
-DEFAULT_AGENT_ID = "company_maistro"
-DEFAULT_AGENT_URL = (
-    "https://company-maistro-6e9e7797491257379f0d09894f301c04.default.us.langgraph.app"
-)
+DEFAULT_GRAPH_ID = "company_maistro"
+DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
 
 
 # evaluation helpers for different types of fields
@@ -117,8 +115,8 @@ def evaluate_agent(outputs: dict, reference_outputs: dict):
     return sum(results.values()) / len(results)
 
 
-def make_agent_runner(agent_id: str, agent_url: str):
-    agent_graph = RemoteGraph(agent_id, url=agent_url)
+def make_agent_runner(graph_id: str, agent_url: str):
+    agent_graph = RemoteGraph(graph_id, url=agent_url)
 
     def run_agent(inputs: dict):
         response = agent_graph.invoke(inputs)
@@ -127,21 +125,29 @@ def make_agent_runner(agent_id: str, agent_url: str):
     return run_agent
 
 
+def get_agent_metadata(graph_id: str, agent_url: str):
+    if "marketplace" in agent_url:
+        project_id = agent_url.split("/")[-1]
+        return {"project_id": project_id, "graph_id": graph_id}
+    return {"graph_id": graph_id}
+
+
 def run_eval(
     *,
     dataset_id: str,
-    agent_id: str = DEFAULT_AGENT_ID,
+    graph_id: str = DEFAULT_GRAPH_ID,
     agent_url: str = DEFAULT_AGENT_URL,
     experiment_prefix: Optional[str] = None,
     min_score: Optional[float] = None,
 ) -> EvaluationResults:
     dataset = client.read_dataset(dataset_id=dataset_id)
-    run_agent = make_agent_runner(agent_id, agent_url)
+    run_agent = make_agent_runner(graph_id, agent_url)
     results = evaluate(
         run_agent,
         data=dataset,
         evaluators=[evaluate_agent],
         experiment_prefix=experiment_prefix,
+        metadata=get_agent_metadata(graph_id, agent_url)
     )
 
     if min_score is not None:
@@ -166,10 +172,10 @@ if __name__ == "__main__":
         help="ID of the dataset to evaluate against",
     )
     parser.add_argument(
-        "--agent-id",
+        "--graph-id",
         type=str,
-        default=DEFAULT_AGENT_ID,
-        help="ID of the agent to evaluate",
+        default=DEFAULT_GRAPH_ID,
+        help="ID of the graph to evaluate",
     )
     parser.add_argument(
         "--agent-url",
@@ -191,7 +197,7 @@ if __name__ == "__main__":
 
     run_eval(
         dataset_id=args.dataset_id,
-        agent_id=args.agent_id,
+        graph_id=args.graph_id,
         agent_url=args.agent_url,
         experiment_prefix=args.experiment_prefix,
         min_score=args.min_score,

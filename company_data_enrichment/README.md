@@ -263,7 +263,7 @@ By default this will use the `Public companies` dataset & `Company mAIstro` agen
 You can pass the following parameters to customize the evaluation:
 
 - `--dataset-id`: ID of the dataset to evaluate against. Defaults to `Public companies` dataset.
-- `--agent-id`: ID of the agent to evaluate. Defaults to `company_maistro`.
+- `--graph-id`: graph ID of the agent to evaluate. Defaults to `company_maistro`.
 - `--agent-url`: URL of the deployed agent to evaluate. Defaults to `Company mAIstro` deployment.
 - `--experiment-prefix`: Prefix for the experiment name.
 - `--min-score`: Minimum acceptable score for evaluation. If specified, the script will raise an assertion error if the average score is below this threshold.
