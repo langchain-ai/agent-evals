@@ -4,7 +4,7 @@ This directory contains evaluation script for the company data enrichment agents
 
 ## Agent schema
 
-Company data enrichment agents are expected to have the following schema:
+High level, company data enrichment agents are expected to take a company and a JSON schema that describes the attributes to extract, and output extracted information in a JSON object. Here is an example:
 
 - Input:
 
@@ -16,18 +16,14 @@ Company data enrichment agents are expected to have the following schema:
           "company"
       ],
       "properties": {
-          "company": {
+        "company": {
           "type": "string",
           "title": "Company"
-          },
-          "extraction_schema": {
+        },
+        "extraction_schema": {
           "type": "object",
           "title": "Extraction Schema"
-          },
-          "user_notes": {
-          "type": "string",
-          "title": "User Notes",
-          },
+        }
       }
     }
     ```
@@ -39,13 +35,13 @@ Company data enrichment agents are expected to have the following schema:
       "type": "object",
       "title": "company_data_enrichment_output",
       "required": [
-          "info"
+        "info"
       ],
       "properties": {
-          "info": {
+        "info": {
           "type": "object",
           "title": "Info"
-          }
+        }
       }
     }
     ```
@@ -274,4 +270,23 @@ You can pass the following parameters to customize the evaluation:
 
 ```shell
 python company_data_enrichment/run_eval.py --experiment-prefix "My custom prefix" --min-score 0.9
+```
+
+### Using different schema
+
+If your agent uses a schema that's different from the [example one above](#agent-schema), you can modify `make_agent_runner` in `run_eval.py` in the following way:
+
+```python
+def make_agent_runner(agent_id: str, agent_url: str):
+    agent_graph = RemoteGraph(agent_id, url=agent_url)
+
+    def run_agent(inputs: dict):
+        # transform the inputs (single LangSmith dataset record) to match the agent's schema
+        transformed_inputs = {"my_agent_key": inputs["company"], ...}
+        response = agent_graph.invoke(transformed_inputs)
+        # transform the agent outputs to match expected eval schema
+        transformed_outputs = {"info": response["my_agent_output_key"]}
+        return transformed_outputs
+
+    return run_agent
 ```
