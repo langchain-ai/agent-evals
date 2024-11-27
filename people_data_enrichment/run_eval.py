@@ -1,7 +1,6 @@
 from langsmith import Client, evaluate
 from Levenshtein import ratio
 from langgraph.pregel.remote import RemoteGraph
-import os
 from pydantic import BaseModel
 from typing import Optional
 from langsmith.evaluation import EvaluationResults
@@ -18,21 +17,6 @@ DEFAULT_GRAPH_ID = "people_maistro"
 DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/cc9aac58-f334-4545-80d9-59300faf8aa2"
 
 client = Client()
-
-# Run some evals manually
-MAIN_PROMPT = """You are a people researcher doing web research on behalf of a user. You are trying to collect this information about people:
-
-<info>
-{info}
-</info>
-
-You have access to the following tools:
-
-- `Search`: call a search tool and get back some results
-- `ScrapeWebsite`: scrape a website and get relevant notes about the given request. This will update the notes above.
-- `Info`: call this when you are done and have gathered all the relevant info
-
-Gather info for this person, company: {topic}"""
 
 extraction_schema = {
     "type": "object",
@@ -69,7 +53,6 @@ extraction_schema = {
 
 DEFAULT_CONFIG = {
     "configurable": {
-        "prompt": MAIN_PROMPT,
         "max_loops": 3
     }
 }
