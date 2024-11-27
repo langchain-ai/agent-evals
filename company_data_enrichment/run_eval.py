@@ -29,7 +29,9 @@ LONG_TEXT_FIELDS = ("description",)
 
 DEFAULT_DATASET_ID = "51173811-4ace-422d-9372-301c084d8d29"
 DEFAULT_GRAPH_ID = "company_maistro"
-DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
+DEFAULT_AGENT_URL = (
+    "https://api.smith.langchain.com/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
+)
 
 
 # evaluation helpers for different types of fields
@@ -147,7 +149,7 @@ def run_eval(
         data=dataset,
         evaluators=[evaluate_agent],
         experiment_prefix=experiment_prefix,
-        metadata=get_agent_metadata(graph_id, agent_url)
+        metadata=get_agent_metadata(graph_id, agent_url),
     )
 
     if min_score is not None:
