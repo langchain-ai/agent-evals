@@ -12,7 +12,7 @@ TOLERANCE = 0.15  # should match within 15%
 NUMERIC_FIELDS = ("Years-Experience",)
 FUZZY_MATCH_FIELDS = ("Role","Company")
 LIST_OF_STRING_FIELDS = ("Prior-Companies",)
-DEFAULT_DATASET_NAME = "Person Researcher Dataset"
+DEFAULT_DATASET_NAME = "People Research Dataset"
 DEFAULT_GRAPH_ID = "people_maistro"
 DEFAULT_AGENT_URL = "https://api.smith.langchain.com/marketplace/cc9aac58-f334-4545-80d9-59300faf8aa2"
 
@@ -173,7 +173,6 @@ def run_eval(
     agent_url: str = DEFAULT_AGENT_URL,
     experiment_prefix: Optional[str] = None,
     min_score: Optional[float] = None,
-    max_concurrency: int = 2,
 ) -> EvaluationResults:
     dataset = client.read_dataset(dataset_name=dataset_name)
     run_agent = make_agent_runner(graph_id, agent_url)
@@ -183,7 +182,6 @@ def run_eval(
         evaluators=[evaluate_agent],
         experiment_prefix=experiment_prefix,
         metadata=get_agent_metadata(graph_id, agent_url),
-        max_concurrency=max_concurrency,
         blocking=True
     )
 
@@ -228,12 +226,6 @@ if __name__ == "__main__":
         type=float,
         help="Minimum acceptable score for evaluation",
     )
-    parser.add_argument(
-        "--max-concurrency",
-        type=int,
-        default=2,
-        help="Maximum number of concurrent runs during evaluation",
-    )
     args = parser.parse_args()
 
     run_eval(
@@ -242,5 +234,4 @@ if __name__ == "__main__":
         agent_url=args.agent_url,
         experiment_prefix=args.experiment_prefix,
         min_score=args.min_score,
-        max_concurrency=args.max_concurrency,
     )
