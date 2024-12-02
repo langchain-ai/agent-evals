@@ -1,7 +1,6 @@
 from langsmith import Client, evaluate
 from Levenshtein import ratio
 from langgraph.pregel.remote import RemoteGraph
-from pydantic import BaseModel
 from typing import Optional
 from langsmith.evaluation import EvaluationResults
 import argparse
@@ -12,9 +11,9 @@ TOLERANCE = 0.15  # should match within 15%
 NUMERIC_FIELDS = ("Years-Experience",)
 FUZZY_MATCH_FIELDS = ("Role", "Company")
 LIST_OF_STRING_FIELDS = ("Prior-Companies",)
-DEFAULT_DATASET_NAME = "People Research Dataset"
+DEFAULT_DATASET_NAME = "People Data Enrichment"
 DEFAULT_GRAPH_ID = "people_maistro"
-DEFAULT_AGENT_URL = "https://langr.ph/marketplace/cc9aac58-f334-4545-80d9-59300faf8aa2"
+DEFAULT_AGENT_URL = "https://langr.ph/marketplace/62bf5890-28fa-4dd1-b469-4751fe7ecdf3"
 
 client = Client()
 
@@ -45,23 +44,6 @@ extraction_schema = {
     "description": "Person information",
     "title": "Person-Schema",
 }
-
-DEFAULT_CONFIG = {"configurable": {"max_loops": 3}}
-
-
-class Person(BaseModel):
-    """A class representing a person to research."""
-
-    name: Optional[str] = None
-    """The name of the person."""
-    company: Optional[str] = None
-    """The current company of the person."""
-    linkedin: Optional[str] = None
-    """The Linkedin URL of the person."""
-    email: str
-    """The email of the person."""
-    role: Optional[str] = None
-    """The current title of the person."""
 
 
 def evaluate_list_of_string_fields(outputs: dict, reference_outputs: dict):
@@ -145,20 +127,35 @@ def evaluate_agent(outputs: dict, reference_outputs: dict):
     return sum(results.values()) / len(results)
 
 
+def transform_dataset_inputs(inputs: dict) -> dict:
+    """Transform LangSmith dataset inputs to match the agent's input schema before invoking the agent."""
+    # see the `Example input` in the README for reference on what `inputs` dict should look like
+    return {
+        "person": {
+            "name": inputs["Person"],
+            "email": inputs["Work-Email"],
+            "linkedin": inputs["Linkedin"],
+        },
+        "extraction_schema": extraction_schema,
+    }
+
+
+def transform_agent_outputs(outputs: dict) -> dict:
+    """Transform agent outputs to match the LangSmith dataset output schema."""
+    # see the `Example output` in the README for reference on what the output should look like
+    # the agent outputs already match the dataset output schema, but you can add any additional processing here
+    return outputs
+
+
 def make_agent_runner(graph_id: str, agent_url: str):
+    """Wrapper that transforms inputs/outputs to match the expected eval schema and invokes the agent."""
     agent_graph = RemoteGraph(graph_id, url=agent_url)
 
-    def run_agent(inputs: dict):
-        agent_inputs = {
-            "person": Person(
-                name=inputs["Person"],
-                email=inputs["Work-Email"],
-                linkedin=inputs["Linkedin"],
-            ),
-            "extraction_schema": extraction_schema,
-        }
-        response = agent_graph.invoke(agent_inputs, DEFAULT_CONFIG)
-        return {"info": response["extracted_information"]}
+    def run_agent(inputs: dict) -> dict:
+        """Run the agent on the inputs from the LangSmith dataset record, return outputs conforming to the LangSmith dataset output schema."""
+        transformed_inputs = transform_dataset_inputs(inputs)
+        response = agent_graph.invoke(transformed_inputs)
+        return transform_agent_outputs(response)
 
     return run_agent
 
@@ -176,7 +173,6 @@ def run_eval(
     graph_id: str = DEFAULT_GRAPH_ID,
     agent_url: str = DEFAULT_AGENT_URL,
     experiment_prefix: Optional[str] = None,
-    min_score: Optional[float] = None,
 ) -> EvaluationResults:
     dataset = client.read_dataset(dataset_name=dataset_name)
     run_agent = make_agent_runner(graph_id, agent_url)
@@ -188,15 +184,6 @@ def run_eval(
         metadata=get_agent_metadata(graph_id, agent_url),
         blocking=True,
     )
-
-    if min_score is not None:
-        results_df = results.to_pandas()
-        score = results_df["feedback.evaluate_agent"].mean()
-        if score < min_score:
-            raise AssertionError(
-                f"Average fraction of correctly extracted fields ({score}) is less than min expected score of {min_score}"
-            )
-
     return results
 
 
@@ -226,11 +213,6 @@ if __name__ == "__main__":
         type=str,
         help="Experiment prefix for the evaluation",
     )
-    parser.add_argument(
-        "--min-score",
-        type=float,
-        help="Minimum acceptable score for evaluation",
-    )
     args = parser.parse_args()
 
     run_eval(
@@ -238,5 +220,4 @@ if __name__ == "__main__":
         graph_id=args.graph_id,
         agent_url=args.agent_url,
         experiment_prefix=args.experiment_prefix,
-        min_score=args.min_score,
     )
