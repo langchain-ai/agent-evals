@@ -49,7 +49,11 @@ EXAMPLES = [
         "question": "What is the square root of 256?",
         "topic": "Intermediate Math Problems",
     },
-    {"answer": 1.18, "question": "256**0.03", "topic": "Intermediate Math Problems"},
+    {
+        "answer": 256**0.03,
+        "question": "256**0.03",
+        "topic": "Intermediate Math Problems",
+    },
     {
         "answer": 3,
         "question": "Evaluate log10\u200b(1000).",
@@ -107,7 +111,7 @@ EXAMPLES = [
         "topic": "Word",
     },
     {
-        "answer": 191.67,
+        "answer": 191.666666667,
         "question": "Calculate the monthly payment for a $10,000 loan with a 3% annual interest rate over 5 years (simple interest).",
         "topic": "Word",
     },
