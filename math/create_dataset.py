@@ -148,12 +148,22 @@ EXAMPLES = [
 ]
 if __name__ == "__main__":
     from langsmith import Client
+    from langsmith.utils import LangSmithNotFoundError
 
     client = Client()
-    dataset_name = "Simple Math Problems"
+    dataset_name = "Simple Math Problem"
 
     # Storing inputs in a dataset lets us
     # run chains and LLMs over a shared set of examples.
+    try:
+        exists_dataset = client.read_dataset(dataset_name=dataset_name)
+        print(f"Dataset '{dataset_name}' already exists.")
+        print("You can access the dataset via the URL: ", exists_dataset.url)
+        exit(1)
+    except LangSmithNotFoundError:
+        # Then let's create the dataset if it doesn't exist
+        pass
+
     dataset = client.create_dataset(
         dataset_name=dataset_name,
         description="Evaluate ability to solve simple math problems.",
@@ -170,3 +180,5 @@ if __name__ == "__main__":
         metadata=metadata,
         dataset_id=dataset.id,
     )
+    print(f"Dataset '{dataset_name}' created with {len(EXAMPLES)} examples.")
+    print("You can access the dataset via the URL: ", dataset.url)
