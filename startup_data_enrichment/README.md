@@ -113,6 +113,14 @@ The dataset used can be found [here](https://smith.langchain.com/public/afabd12a
   ```
 </details>
 
+### Using the dataset
+
+To use the data from this dataset in your own project, you can create a new dataset with the same examples using the following command:
+
+```shell
+python startup_data_enrichment/create_dataset.py
+```
+
 ## Invoking the agent
 
 The agent is invoked using a `RemoteGraph`:
@@ -145,6 +153,8 @@ def transform_agent_outputs(outputs: dict) -> dict:
 `transform_dataset_inputs` will be applied to LangSmith dataset inputs before invoking the agent, and `transform_agent_outputs` will be applied to the agent's response before it's compared to the expected output in the LangSmith eval dataset.
 
 ## Running evals
+
+First, make sure you have created the dataset as described in the [Using the dataset](#using-the-dataset) section.
 
 To evaluate the agent, you can run `startup_data_enrichment/run_eval.py` script. This will create new experiments in LangSmith for the two [datasets](#datasets) mentioned above.
 
