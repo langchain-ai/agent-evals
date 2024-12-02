@@ -20,9 +20,9 @@ The dataset used can be found [here](https://smith.langchain.com/public/640df79c
   {
     "company": "Nvidia",
     "extraction_schema": {
-        "type": "object",
-        "title": "company_info",
-        "required": [
+      "type": "object",
+      "title": "company_info",
+      "required": [
         "name",
         "description",
         "website",
@@ -31,40 +31,40 @@ The dataset used can be found [here](https://smith.langchain.com/public/640df79c
         "employee_count",
         "ceo"
         ],
-        "properties": {
-        "ceo": {
-            "type": "string",
-            "description": "Name of the company's CEO"
-        },
-        "name": {
-            "type": "string",
-            "description": "Official company name"
-        },
-        "website": {
-            "type": "string",
-            "format": "uri",
-            "description": "Company's official website URL"
-        },
-        "description": {
-            "type": "string",
-            "description": "Brief description of the company and its activities"
-        },
-        "headquarters": {
-            "type": "string",
-            "description": "Location of company headquarters, formatted as <city>, <state code> (e.g. San Francisco, CA)"
-        },
-        "employee_count": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Number of employees in the company"
-        },
-        "linkedin_profile": {
-            "type": "string",
-            "format": "uri",
-            "description": "Company's LinkedIn profile URL"
-        }
-        },
-        "description": "Company information"
+      "properties": {
+      "ceo": {
+        "type": "string",
+        "description": "Name of the company's CEO"
+      },
+      "name": {
+        "type": "string",
+        "description": "Official company name"
+      },
+      "website": {
+        "type": "string",
+        "format": "uri",
+        "description": "Company's official website URL"
+      },
+      "description": {
+        "type": "string",
+        "description": "Brief description of the company and its activities"
+      },
+      "headquarters": {
+        "type": "string",
+        "description": "Location of company headquarters, formatted as <city>, <state code> (e.g. San Francisco, CA)"
+      },
+      "employee_count": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Number of employees in the company"
+      },
+      "linkedin_profile": {
+        "type": "string",
+        "format": "uri",
+        "description": "Company's LinkedIn profile URL"
+      }
+      },
+      "description": "Company information"
     }
   }
   ```
@@ -78,13 +78,13 @@ The dataset used can be found [here](https://smith.langchain.com/public/640df79c
   ```json
   {
     "info": {
-        "ceo": "Jensen Huang",
-        "name": "Nvidia Corporation",
-        "website": "https://www.nvidia.com",
-        "description": "Nvidia Corporation is a multinational technology company specializing in the design and manufacture of graphics processing units (GPUs) for gaming, professional visualization, data centers, and automotive markets. The company is a leader in artificial intelligence (AI) computing, providing platforms and solutions that power AI applications across various industries.",
-        "headquarters": "Santa Clara, CA",
-        "employee_count": 29600,
-        "linkedin_profile": "https://www.linkedin.com/company/nvidia"
+      "ceo": "Jensen Huang",
+      "name": "Nvidia Corporation",
+      "website": "https://www.nvidia.com",
+      "description": "Nvidia Corporation is a multinational technology company specializing in the design and manufacture of graphics processing units (GPUs) for gaming, professional visualization, data centers, and automotive markets. The company is a leader in artificial intelligence (AI) computing, providing platforms and solutions that power AI applications across various industries.",
+      "headquarters": "Santa Clara, CA",
+      "employee_count": 29600,
+      "linkedin_profile": "https://www.linkedin.com/company/nvidia"
     }
   } 
   ```

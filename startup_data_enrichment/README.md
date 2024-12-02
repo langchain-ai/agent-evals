@@ -98,16 +98,16 @@ The dataset used can be found [here](https://smith.langchain.com/public/afabd12a
   ```json
   {
     "info": {
-        "ceo": "Harrison Chase",
-        "name": "LangChain, Inc.",
-        "website": "https://www.langchain.com",
-        "description": "LangChain helps developers to build applications powered by large language models (LLMs). It provides tools and frameworks to integrate LLMs with external data sources and APIs, facilitating the creation of advanced AI applications.",
-        "latest_round": "Series A",
-        "year_founded": 2022,
-        "latest_round_date": "2024-02-15",
-        "crunchbase_profile": "https://www.crunchbase.com/organization/langchain",
-        "total_funding_mm_usd": 35,
-        "latest_round_amount_mm_usd": 25
+      "ceo": "Harrison Chase",
+      "name": "LangChain, Inc.",
+      "website": "https://www.langchain.com",
+      "description": "LangChain helps developers to build applications powered by large language models (LLMs). It provides tools and frameworks to integrate LLMs with external data sources and APIs, facilitating the creation of advanced AI applications.",
+      "latest_round": "Series A",
+      "year_founded": 2022,
+      "latest_round_date": "2024-02-15",
+      "crunchbase_profile": "https://www.crunchbase.com/organization/langchain",
+      "total_funding_mm_usd": 35,
+      "latest_round_amount_mm_usd": 25
     }
   }
   ```
