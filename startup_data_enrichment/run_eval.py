@@ -25,7 +25,7 @@ EXACT_MATCH_FIELDS = (
 FUZZY_MATCH_FIELDS = ("name", "ceo")
 LONG_TEXT_FIELDS = ("description",)
 
-DEFAULT_DATASET_NAME = "Public Company Data Enrichment"
+DEFAULT_DATASET_NAME = "Startup Data Enrichment"
 DEFAULT_GRAPH_ID = "company_maistro"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
 

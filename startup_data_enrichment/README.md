@@ -156,7 +156,7 @@ python startup_data_enrichment/run_eval.py --experiment-prefix "My custom prefix
 
 You can pass the following parameters to customize the evaluation:
 
-- `--dataset-name`: Name of the dataset to evaluate against. Defaults to `Public Company Data Enrichment` dataset.
+- `--dataset-name`: Name of the dataset to evaluate against. Defaults to `Startup Data Enrichment` dataset.
 - `--graph-id`: graph ID of the agent to evaluate. Defaults to `company_maistro`.
 - `--agent-url`: URL of the deployed agent to evaluate. Defaults to `Company mAIstro` deployment.
 - `--experiment-prefix`: Prefix for the experiment name.
