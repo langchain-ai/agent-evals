@@ -1,4 +1,4 @@
-## Math
+# Math
 
 This directory contains evaluation script for the math agents.
 
