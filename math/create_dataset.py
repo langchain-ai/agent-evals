@@ -151,7 +151,7 @@ if __name__ == "__main__":
     from langsmith.utils import LangSmithNotFoundError
 
     client = Client()
-    dataset_name = "Simple Math Problem"
+    dataset_name = "Simple Math Problems"
 
     # Storing inputs in a dataset lets us
     # run chains and LLMs over a shared set of examples.
