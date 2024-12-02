@@ -125,14 +125,14 @@ def get_agent_metadata(graph_id: str, agent_url: str):
 
 def transform_dataset_inputs(inputs: dict) -> dict:
     """Transform LangSmith dataset inputs to match the agent's input schema before invoking the agent."""
-    # see the `Example input` in the README for reference on what `inputs` dict will look like
+    # see the `Example input` in the README for reference on what `inputs` dict should look like
     # the dataset inputs already match the agent's input schema, but you can add any additional processing here
     return inputs
 
 
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
-    # see the `Example output` in the README for reference on what the output from `run_agent` would look like
+    # see the `Example output` in the README for reference on what the output should look like
     # the agent outputs already match the dataset output schema, but you can add any additional processing here
     return outputs
 

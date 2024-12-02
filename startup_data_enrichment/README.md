@@ -132,13 +132,13 @@ Your agent might be using a custom input/output schema that doesn't match the da
 
 def transform_dataset_inputs(inputs: dict) -> dict:
     """Transform LangSmith dataset inputs to match the agent's input schema before invoking the agent."""
-    # see the `Example input` for reference on what `inputs` dict will look like
+    # see the `Example output` in the README for reference on what the output should look like
     return {"my_agent_key": inputs["company"], ...}
 
 
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
-    # see the `Example output` for reference on what the output from `run_agent` would look like
+    # see the `Example output` for reference on what the output should look like
     return {"info": response["my_agent_output_key"]}
 ```
 
