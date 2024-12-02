@@ -11,9 +11,7 @@ client = Client()
 
 DEFAULT_DATASET_NAME = "Math Evaluation Dataset"
 DEFAULT_GRAPH_ID = "agent"
-DEFAULT_AGENT_URL = (
-    "https://api.smith.langchain.com/marketplace/b5152a8c-e0ed-4ed9-9bac-9c3cb7566c8d"
-)
+DEFAULT_AGENT_URL = "https://langr.ph/marketplace/b5152a8c-e0ed-4ed9-9bac-9c3cb7566c8d"
 
 
 def correct(outputs: dict, reference_outputs: dict) -> bool:

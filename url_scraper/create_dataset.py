@@ -512,16 +512,19 @@ if __name__ == "__main__":
     # Storing inputs in a dataset lets us
     # run chains and LLMs over a shared set of examples.
     dataset = client.create_dataset(
-      dataset_name=dataset_name, description="Extract specific data from a given webpage.",
+        dataset_name=dataset_name,
+        description="Extract specific data from a given webpage.",
     )
 
     # Prepare inputs, outputs, and metadata for bulk creation
-    inputs = [{"json_schema": record["json_schema"], 'url': record['url']} for record in examples]
+    inputs = [
+        {"json_schema": record["json_schema"], "url": record["url"]}
+        for record in examples
+    ]
     outputs = [{"output": record["output"]} for record in examples]
 
     client.create_examples(
-      inputs=inputs,
-      outputs=outputs,
-      dataset_id=dataset.id,
+        inputs=inputs,
+        outputs=outputs,
+        dataset_id=dataset.id,
     )
-
