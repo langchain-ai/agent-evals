@@ -663,7 +663,7 @@ if __name__ == "__main__":
 
     dataset = client.create_dataset(
         dataset_name=dataset_name,
-        description="Evaluate ability to extract information for public companies (e.g., CEO, headquarters, employee count etc.)",
+        description="Evaluate ability to research information about public companies (e.g., CEO, headquarters, employee count etc.)",
     )
 
     # Prepare inputs, outputs, and metadata for bulk creation

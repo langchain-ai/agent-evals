@@ -4,7 +4,7 @@ This directory contains evaluation script for the people data enrichment agents.
 
 ## Dataset
 
-The dataset used can be found [here](https://smith.langchain.com/public/2af89d2a-93f6-4c84-80ac-70defcfd14c8/d). This dataset has a list of people to extract the following fields for:
+The dataset used can be found [here](https://smith.langchain.com/public/2af89d2a-93f6-4c84-80ac-70defcfd14c8/d). This dataset has a list of people to do research on and extract the following fields for:
   - `Years-Experience`
   - `Company`
   - `Role`

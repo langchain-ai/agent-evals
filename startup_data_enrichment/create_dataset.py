@@ -426,7 +426,7 @@ if __name__ == "__main__":
 
     dataset = client.create_dataset(
         dataset_name=dataset_name,
-        description="Evaluate ability to extract information for startups (e.g., latest round, total funding, year founded etc.)",
+        description="Evaluate ability to research information about startups (e.g., latest round, total funding, year founded etc.)",
     )
 
     # Prepare inputs, outputs, and metadata for bulk creation

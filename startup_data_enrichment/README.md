@@ -4,7 +4,8 @@ This directory contains evaluation script for evaluating an agent on how well it
 
 ## Dataset
 
-The dataset used can be found [here](https://smith.langchain.com/public/afabd12a-62fa-4c09-b083-6b1742b4cc3a/d). This dataset has a list of AI startups to extract the following fields for:
+The dataset used can be found [here](https://smith.langchain.com/public/afabd12a-62fa-4c09-b083-6b1742b4cc3a/d). This dataset has a list of AI startups to do research on and extract the following fields for:
+
   - `name`
   - `description`
   - `website`

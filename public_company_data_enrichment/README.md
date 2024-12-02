@@ -4,7 +4,7 @@ This directory contains evaluation script for evaluating an agent on how well it
 
 ## Dataset
 
-The dataset used can be found [here](https://smith.langchain.com/public/640df79c-1831-494e-8824-d7300205dc8e/d). This dataset has a list of publicly traded companies to extract the following fields for:
+The dataset used can be found [here](https://smith.langchain.com/public/640df79c-1831-494e-8824-d7300205dc8e/d). This dataset has a list of publicly traded companies to do research on and extract the following fields for:
   - `name`
   - `description`
   - `website`
