@@ -1,6 +1,6 @@
-# Public Company Data Enrichment
+# Startup Data Enrichment
 
-This directory contains evaluation script for evaluating an agent on how well it does at researching information about a public company.
+This directory contains evaluation script for evaluating an agent on how well it does at researching information about a startup.
 
 ## Dataset
 
