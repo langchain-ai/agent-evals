@@ -175,7 +175,9 @@ You can test the agent locally by using [LangGraph CLI](https://langchain-ai.git
 langgraph dev
 ```
 
-This will start a local server that you can interact with using `RemoteGraph`. Simply pass local URL for `agent-url` parameter:
+This will start a local server that you can interact with using `RemoteGraph`.
+
+Then simply pass local URL for `agent-url` parameter and run the evaluation script as before:
 
 ```shell
 python startup_data_enrichment/run_eval.py --experiment-prefix "My custom prefix" --agent-url http://localhost:8123
