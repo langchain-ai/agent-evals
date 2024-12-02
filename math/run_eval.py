@@ -9,32 +9,53 @@ from langgraph.pregel.remote import RemoteGraph
 
 client = Client()
 
-DEFAULT_DATASET_NAME = "Math Evaluation Dataset"
+DEFAULT_DATASET_NAME = "Simple Math Problems"
 DEFAULT_GRAPH_ID = "agent"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/b5152a8c-e0ed-4ed9-9bac-9c3cb7566c8d"
 
 
-def correct(outputs: dict, reference_outputs: dict) -> bool:
-    """Evaluator."""
-    actual_answer = outputs["output"]
-    reference_answer = reference_outputs["Answer"]
+def correct(inputs: dict, outputs: dict, reference_outputs: dict) -> int:
+    """Evaluator function to check if the extracted answer is correct.
+
+    This function compares the extracted answer with the reference answer.
+
+    If both are numbers, it checks if they are close enough and returns 1 if they are.
+
+    It penalizes wrong answers with -1.
+
+    If the provided answer is None (was not answered), then the score wil be 0
+    """
+    actual_answer = outputs["value"]
+    reference_answer = reference_outputs["answer"]
+
+    if reference_answer is None:
+        return 1 if actual_answer is None else -1
+
+    if actual_answer is None:
+        # We assign a score of 0 if the answer is not provided
+        return 0
 
     try:
         actual_float = float(actual_answer)
         reference_float = float(reference_answer)
     except (ValueError, TypeError):
         # Return False if conversion to float fails
-        return False
+        return 0
 
     # Compare the floats with precision tolerance
-    return isclose(actual_float, reference_float, rel_tol=1e-9, abs_tol=1e-9)
+    is_correct = isclose(actual_float, reference_float, rel_tol=1e-9, abs_tol=1e-9)
+    return 1 if is_correct else -1
 
 
 def make_agent_runner(graph_id: str, agent_url: str):
     agent_graph = RemoteGraph(graph_id, url=agent_url)
 
     def run_agent(inputs: dict):
-        return agent_graph.invoke({"question": inputs["Question"]})["value"]
+        result = agent_graph.invoke({"question": inputs["question"]})
+        return {
+            "value": result.get("value", None),
+            "explanation": result["explanation"],
+        }
 
     return run_agent
 
