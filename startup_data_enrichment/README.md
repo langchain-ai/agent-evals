@@ -1,4 +1,4 @@
-## Public Company Data Enrichment
+# Public Company Data Enrichment
 
 This directory contains evaluation script for evaluating an agent on how well it does at researching information about a public company.
 

@@ -1,4 +1,4 @@
-## People Data Enrichment
+# People Data Enrichment
 
 This directory contains evaluation script for the people data enrichment agents.
 
