@@ -145,7 +145,28 @@ EXAMPLES = [
         "question": "Compute ∫(4x−1)dx between x = 1 and x = 3",
         "topic": "Calculus",
     },
+    {
+        "answer": None,
+        "question": "I bought 10 cars, how much money did I spend?",
+        "topic": "Unanswerable",
+    },
+    {
+        "answer": None,
+        "question": "x=10, y=5, what is x+y+z?",
+        "topic": "Unanswerable",
+    },
+    {
+        "answer": None,
+        "question": "what is the answer to life the universe and everything?",
+        "topic": "Unanswerable",
+    },
+    {
+        "answer": None,
+        "question": "What is the capital of France?",
+        "topic": "Unanswerable",  # Not a math problem
+    },
 ]
+
 if __name__ == "__main__":
     from langsmith import Client
     from langsmith.utils import LangSmithNotFoundError
