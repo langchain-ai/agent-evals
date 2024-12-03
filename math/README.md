@@ -11,7 +11,7 @@ High level, math agents are expected to take a math question and output the answ
     ```json
     {
       "type": "object",
-      "title": "math_input",
+      "title": "calculate",
       "required": [
           "question"
       ],
@@ -57,12 +57,12 @@ High level, math agents are expected to take a math question and output the answ
 
 There is a standard math problems dataset for evaluation in LangSmith:
 
-- [Dataset](https://smith.langchain.com/public/e0993f2f-c055-4446-afc2-e52da6a4dda0/d). This dataset has a list of math problems to solve ("question" and "answer").
+- [Simple Math Problems Dataset](https://smith.langchain.com/public/4295b2cf-7a79-415d-97d0-b3639e990848/d). This dataset has a list of math problems consisting of questions and answers.
 
   Example input:
   ```json
   {
-    "Question": "Find the second derivative of f(x)=ln(x) and evaluate it at x=0.5."
+    "question": "Find the second derivative of f(x)=ln(x) and evaluate it at x=0.5."
   }
   ```
 
@@ -70,13 +70,20 @@ There is a standard math problems dataset for evaluation in LangSmith:
 
   ```json
   {
-    "Answer": "-4"
+    "answer": "-4"
   }
   ```
 
 ## Evaluation Metric
 
-Currently there is a single evaluation metric: whether the answer is close to the expected answer (within a precision tolerance).
+A score is calculated based on the correctness of the answer based on the following rules:
+
+| **Condition**                                                     | **Score** |
+|-------------------------------------------------------------------|-----------|
+| Answer is correct (within precision tolerance of expected answer) | 1         |
+| Answer is incorrect                                               | -1        |
+| Answer is not provided, but question can be answered              | 0         |
+| Answer is not provided, but question cannot be answered           | 1         |
 
 These can be adjusted in the `run_eval.py` script if you're adapting this to your own dataset.
 
@@ -90,7 +97,7 @@ To evaluate the agent, you can run `math/run_eval.py` script. This will create n
 python math/run_eval.py
 ```
 
-By default this will use the `Math problems` dataset & `Calc you later` agent by LangChain.
+By default, this will use the `Math problems` dataset & `Calc you later` agent by LangChain.
 
 **Advanced usage:**
 
