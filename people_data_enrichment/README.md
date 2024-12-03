@@ -4,11 +4,11 @@ This directory contains evaluation script for the people data enrichment agents.
 
 ## Dataset
 
-The dataset used can be found [here](https://smith.langchain.com/public/2af89d2a-93f6-4c84-80ac-70defcfd14c8/d). This dataset has a list of people to do research on and extract the following fields for:
-  - `Years-Experience`
-  - `Company`
-  - `Role`
-  - `Prior-Companies`
+The dataset used can be found [here](https://smith.langchain.com/public/3384cc3a-722c-4eb1-8e41-dff56fea05b8/d). This dataset has a list of people to do research on and extract the following fields for:
+  - `years_experience`
+  - `current_company`
+  - `role`
+  - `prior_companies`
 
 
 <details>
@@ -27,28 +27,28 @@ The dataset used can be found [here](https://smith.langchain.com/public/2af89d2a
     "type": "object",
     "title": "Person-Schema",
     "required": [
-      "Years-Experience",
-      "Company",
-      "Role",
-      "Prior-Companies"
+      "years_experience",
+      "current_company",
+      "role",
+      "prior_companies"
     ],
     "properties": {
-      "Role": {
+      "role": {
         "type": "string",
         "description": "Current role of the person."
       },
-      "Company": {
+      "current_company": {
         "type": "string",
         "description": "The name of the current company the person works at."
       },
-      "Prior-Companies": {
+      "prior_companies": {
         "type": "array",
         "items": {
           "type": "string"
         },
         "description": "List of previous companies where the person has worked"
       },
-      "Years-Experience": {
+      "years_experience": {
         "type": "number",
         "description": "How many years of full time work experience (excluding internships) does this person have."
       }
@@ -65,26 +65,48 @@ The dataset used can be found [here](https://smith.langchain.com/public/2af89d2a
 ```json
 {
   "extracted_information": {
-      "Role": "Exploring new ideas and building out next project",
-      "Company": "South Park Commons",
-      "Prior-Companies": [
-      "Instabase",
-      "Chestnut",
-      "MIT"
+      "role": "Exploring new ideas and building out next project",
+      "current_company": "South Park Commons",
+      "prior_companies": [
+        "Instabase",
+        "Chestnut",
+        "MIT"
       ],
-      "Years-Experience": 5
+      "years_experience": 5
   }
 }
 ```
 </details>
 
+### Using the dataset
+
+To use the data from this dataset in your own project, you can:
+
+(1) clone the dataset using LangSmith SDK:
+
+```python
+from langsmith import Client
+client = Client()
+
+cloned_dataset = client.clone_public_dataset(
+    "https://smith.langchain.com/public/3384cc3a-722c-4eb1-8e41-dff56fea05b8/d",
+    dataset_name="People Data Enrichment"
+)
+```
+
+(2) create a new dataset with the same examples using the following command:
+
+```shell
+python people_data_enrichment/create_dataset.py
+```
+
 ## Evaluation Metric
 
 Currently there is a single evaluation metric: fraction of the fields that were correctly extracted (per person). Correctness is defined differently depending on the field type:
 
-- fuzzy matching for list of string fields such as `Prior-Companies`
-- fuzzy matches for fields like `Role` / `Company`
-- checking within a certain tolerance (+/- 15%) for `Years-Experience` field
+- fuzzy matching for list of string fields such as `prior_companies`
+- fuzzy matches for fields like `role` / `current_company`
+- checking within a certain tolerance (+/- 15%) for `years_experience` field
 
 ## Invoking the agent
 

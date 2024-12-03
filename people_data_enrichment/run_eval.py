@@ -8,9 +8,9 @@ import argparse
 # Defaults
 EXPERIMENT_PREFIX = "People mAIstro "
 TOLERANCE = 0.15  # should match within 15%
-NUMERIC_FIELDS = ("Years-Experience",)
-FUZZY_MATCH_FIELDS = ("Role", "Company")
-LIST_OF_STRING_FIELDS = ("Prior-Companies",)
+NUMERIC_FIELDS = ("years_experience",)
+FUZZY_MATCH_FIELDS = ("role", "current_company")
+LIST_OF_STRING_FIELDS = ("prior_companies",)
 DEFAULT_DATASET_NAME = "People Data Enrichment"
 DEFAULT_GRAPH_ID = "people_maistro"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/62bf5890-28fa-4dd1-b469-4751fe7ecdf3"
@@ -20,29 +20,29 @@ client = Client()
 extraction_schema = {
     "type": "object",
     "required": [
-        "Years-Experience",
-        "Company",
-        "Role",
-        "Prior-Companies",
+        "years_experience",
+        "current_company",
+        "role",
+        "prior_companies",
     ],
     "properties": {
-        "Role": {"type": "string", "description": "Current role of the person."},
-        "Years-Experience": {
+        "role": {"type": "string", "description": "Current role of the person."},
+        "years_experience": {
             "type": "number",
             "description": "How many years of full time work experience (excluding internships) does this person have.",
         },
-        "Company": {
+        "current_company": {
             "type": "string",
             "description": "The name of the current company the person works at.",
         },
-        "Prior-Companies": {
+        "prior_companies": {
             "type": "array",
             "items": {"type": "string"},
             "description": "List of previous companies where the person has worked",
         },
     },
     "description": "Person information",
-    "title": "Person-Schema",
+    "title": "Person",
 }
 
 
@@ -132,9 +132,9 @@ def transform_dataset_inputs(inputs: dict) -> dict:
     # see the `Example input` in the README for reference on what `inputs` dict should look like
     return {
         "person": {
-            "name": inputs["Person"],
-            "email": inputs["Work-Email"],
-            "linkedin": inputs["Linkedin"],
+            "name": inputs["name"],
+            "email": inputs["work_email"],
+            "linkedin": inputs["linkedin_profile"],
         },
         "extraction_schema": extraction_schema,
     }
