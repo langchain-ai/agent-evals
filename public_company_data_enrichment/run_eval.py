@@ -1,6 +1,7 @@
 from typing import Any, Optional
 
 from Levenshtein import ratio
+from langchain_anthropic import ChatAnthropic
 from langsmith import Client, evaluate
 from langsmith.evaluation import LangChainStringEvaluator, EvaluationResults
 
@@ -124,10 +125,10 @@ def transform_dataset_inputs(inputs: dict) -> dict:
     return inputs
 
 
-def transform_agent_outputs(outputs: dict) -> dict:
+def transform_agent_outputs(inputs: dict, outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` in the README for reference on what the output should look like
-    # the agent outputs already match the dataset output schema, but you can add any additional processing here
+    outputs["info"] = get_structured_output(outputs["info"], inputs["extraction_schema"])
     return outputs
 
 
@@ -139,9 +140,43 @@ def make_agent_runner(graph_id: str, agent_url: str):
         """Run the agent on the inputs from the LangSmith dataset record, return outputs conforming to the LangSmith dataset output schema."""
         transformed_inputs = transform_dataset_inputs(inputs)
         response = agent_graph.invoke(transformed_inputs)
-        return transform_agent_outputs(response)
+        return transform_agent_outputs(inputs, response)
 
     return run_agent
+
+
+EXTRACTION_PROMPT = """Your task is to take information gathered from web research and extract it into the following schema.
+
+<schema>
+{extraction_schema}
+</schema>
+
+Here is all of the information gathered from the research:
+
+<research_info>
+{info}
+</research_info>
+"""
+
+
+def get_structured_output(output: str, extraction_schema: dict) -> dict:
+    """Convert unstructured (text) output to structured output conforming to the dataset output schema."""
+    llm = ChatAnthropic(model="claude-3-5-sonnet-latest").with_structured_output(
+        extraction_schema
+    )
+    system_prompt = EXTRACTION_PROMPT.format(
+        extraction_schema=extraction_schema, info=output
+    )
+    output = llm.invoke(
+        [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": "Produce a structured output from this information.",
+            },
+        ]
+    )
+    return output
 
 
 def run_eval(
