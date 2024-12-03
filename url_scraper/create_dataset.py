@@ -1,6 +1,6 @@
 examples = [
     {
-        "url": "https://www.apple.com/leadership/",
+        "url": "https://web.archive.org/web/20241125125022/https://www.apple.com/leadership/",
         "json_schema": {
             "$schema": "http://json-schema.org/draft-07/schema#",
             "title": "Board Member Information Extractor",
@@ -174,7 +174,7 @@ examples = [
         ],
     },
     {
-        "url": "https://www.food.com/recipe/balsamic-chicken-and-mushrooms-54726",
+        "url": "https://web.archive.org/web/20240927071924/https://www.food.com/recipe/balsamic-chicken-and-mushrooms-54726",
         "json_schema": {
             "title": "Recipe Ingredients Extractor without Unit or Quantity",
             "description": "Schema for extracting ingredients from a recipe text without unit or quantity.",
@@ -199,7 +199,7 @@ examples = [
         ],
     },
     {
-        "url": "https://mufon.com/2021/05/14/aurora-tx-crash-1897/",
+        "url": "https://web.archive.org/web/20241127054241/https://mufon.com/2021/05/14/aurora-tx-crash-1897/",
         "json_schema": {
             "type": "object",
             "title": "UFO Sighting Extractor",
@@ -232,7 +232,7 @@ examples = [
         ],
     },
     {
-        "url": "https://www.hauntedplaces.org/item/eunice-williams-covered-bridge-pumping-station-bridge/",
+        "url": "https://web.archive.org/web/20220703212257/https://www.hauntedplaces.org/item/eunice-williams-covered-bridge-pumping-station-bridge/",
         "json_schema": {
             "$schema": "http://json-schema.org/draft-07/schema#",
             "title": "Haunted Location Extractor",
@@ -262,7 +262,7 @@ examples = [
         ),
     },
     {
-        "url": "https://phys.org/news/2024-10-super-neptune-exoplanet.html",
+        "url": "https://web.archive.org/web/20241117113920/https://phys.org/news/2024-10-super-neptune-exoplanet.html",
         "json_schema": {
             "title": "Exoplanet Information Extractor",
             "description": "Schema for extracting information about exoplanets from text.",
@@ -362,7 +362,7 @@ examples = [
         ],
     },
     {
-        "url": "https://sites.pitt.edu/~dash/japan.html",
+        "url": "https://web.archive.org/web/20240920054913/https://sites.pitt.edu/~dash/japan.html",
         "json_schema": {
             "$schema": "http://json-schema.org/draft-07/schema#",
             "title": "Legend Extractor",
@@ -431,7 +431,7 @@ examples = [
         ],
     },
     {
-        "url": "https://sites.pitt.edu/~dash/japan.html",
+        "url": "https://web.archive.org/web/20240920054913/https://sites.pitt.edu/~dash/japan.html",
         "json_schema": {
             "title": "Conspiracy Theory Extractor",
             "description": "Schema for extracting information related to conspiracy theories from text.",
@@ -463,7 +463,7 @@ examples = [
         "output": [],
     },
     {
-        "url": "https://www.factcheck.org/2021/07/scicheck-spoof-video-furthers-microchip-conspiracy-theory/",
+        "url": "https://web.archive.org/web/20240820083311/https://www.factcheck.org/2021/07/scicheck-spoof-video-furthers-microchip-conspiracy-theory/",
         "json_schema": {
             "title": "Conspiracy Theory Extractor",
             "description": "Schema for extracting information related to conspiracy theories from text.",
