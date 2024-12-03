@@ -149,6 +149,8 @@ def transform_agent_outputs(outputs: dict) -> dict:
 
 ## Running evals
 
+First, make sure you have created the dataset as described in the [Using the dataset](#using-the-dataset) section.
+
 To evaluate the agent, you can run `people_data_enrichment/run_eval.py` script. This will create new experiments in LangSmith for the two [datasets](#datasets) mentioned above.
 
 By default this will use the `People Data Enrichment` dataset & `People mAIstro` agent by LangChain.
