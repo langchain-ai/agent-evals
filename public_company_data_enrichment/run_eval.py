@@ -1,8 +1,10 @@
 from typing import Any, Optional
 
 from Levenshtein import ratio
+from langchain_anthropic import ChatAnthropic
 from langsmith import Client, evaluate
 from langsmith.evaluation import LangChainStringEvaluator, EvaluationResults
+from pydantic import BaseModel, Field
 
 from langgraph.pregel.remote import RemoteGraph
 
@@ -16,8 +18,8 @@ EXACT_MATCH_FIELDS = (
     "linkedin_profile",
     "headquarters",
 )
-FUZZY_MATCH_FIELDS = ("name", "ceo")
-LONG_TEXT_FIELDS = ("description",)
+FUZZY_MATCH_FIELDS = ("name", "ceo", "description")
+LONG_TEXT_FIELDS = ()
 
 DEFAULT_DATASET_NAME = "Public Company Data Enrichment"
 DEFAULT_GRAPH_ID = "company_maistro"
@@ -92,7 +94,7 @@ def evaluate_fuzzy_match_fields(outputs: dict, reference_outputs: dict):
 
 
 # effectively fraction of matching fields
-def evaluate_agent(outputs: dict, reference_outputs: dict):
+def evaluate_agent_old(outputs: dict, reference_outputs: dict):
     if "info" not in outputs or not isinstance(outputs["info"], dict):
         return 0.0
 
@@ -105,6 +107,42 @@ def evaluate_agent(outputs: dict, reference_outputs: dict):
         **evaluate_fuzzy_match_fields(actual_company_info, expected_company_info),
     }
     return sum(results.values()) / len(results)
+
+
+judge_llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0)
+
+EVALUATION_PROMPT = f"""You are an evaluator tasked with assessing the accuracy of an agent's output compared to the expected output. Follow these instructions:
+
+1. **Numeric Fields Evaluation**: For fields {NUMERIC_FIELDS}, check if the agent's output is within 10% of the expected value. Score 1 if yes, 0 if no.
+2. **Exact Match Evaluation**: For fields {EXACT_MATCH_FIELDS}, check if the agent's output matches the expected output EXACTLY. Score 1 if yes, 0 if no.
+3. **Fuzzy Match Evaluation**: For fields {FUZZY_MATCH_FIELDS}, check if the agent's output matches the expected output APPROXIMATELY. Score 1 if yes, 0 if no.
+4. **Overall Evaluation**: Return final score that is a fraction of fields that have score of 1. For example, if 1/5 fields has score of 1, the final score is 0.2."""
+
+
+def evaluate_agent(outputs: dict, reference_outputs: dict):
+    class Score(BaseModel):
+        """Evaluate the agent's output against the expected output."""
+
+        score: float = Field(
+            description="A score between 0 and 1 indicating the accuracy of the agent's output compared to the expected output. 1 is a perfect match."
+        )
+        reason: str = Field(
+            description="A brief explanation for why you scored the agent's output as you did."
+        )
+
+    score = judge_llm.with_structured_output(Score).invoke(
+        [
+            {
+                "role": "system",
+                "content": EVALUATION_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": f"Actual output: {outputs}\nExpected output: {reference_outputs}",
+            },
+        ]
+    )
+    return score.score
 
 
 def get_agent_metadata(graph_id: str, agent_url: str):
