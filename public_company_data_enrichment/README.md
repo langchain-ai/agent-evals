@@ -144,7 +144,7 @@ def transform_dataset_inputs(inputs: dict) -> dict:
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` for reference on what the output should look like
-    return {"info": response["my_agent_output_key"]}
+    return {"info": outputs["my_agent_output_key"]}
 ```
 
 `transform_dataset_inputs` will be applied to LangSmith dataset inputs before invoking the agent, and `transform_agent_outputs` will be applied to the agent's response before it's compared to the expected output in the LangSmith eval dataset.
