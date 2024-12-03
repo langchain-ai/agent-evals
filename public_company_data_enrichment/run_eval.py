@@ -1,9 +1,9 @@
-from typing import Any, Optional
+import argparse
+from typing import Optional
 
-from Levenshtein import ratio
 from langchain_anthropic import ChatAnthropic
 from langsmith import Client, evaluate
-from langsmith.evaluation import LangChainStringEvaluator, EvaluationResults
+from langsmith.evaluation import EvaluationResults
 from pydantic import BaseModel, Field
 
 from langgraph.pregel.remote import RemoteGraph
@@ -19,95 +19,10 @@ EXACT_MATCH_FIELDS = (
     "headquarters",
 )
 FUZZY_MATCH_FIELDS = ("name", "ceo", "description")
-LONG_TEXT_FIELDS = ()
 
 DEFAULT_DATASET_NAME = "Public Company Data Enrichment"
 DEFAULT_GRAPH_ID = "company_maistro"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
-
-
-# evaluation helpers for different types of fields
-
-
-def evaluate_numeric_fields(outputs: dict, reference_outputs: dict) -> dict[str, float]:
-    lower_bound = 1 - TOLERANCE
-    upper_bound = 1 + TOLERANCE
-    field_to_score = {}
-    for k in NUMERIC_FIELDS:
-        if k not in reference_outputs:
-            continue
-
-        raw_field_value = outputs.get(k, 0)
-        try:
-            score = float(
-                lower_bound
-                <= int(raw_field_value) / reference_outputs[k]
-                <= upper_bound
-            )
-        except ValueError:
-            score = 0.0
-
-        field_to_score[k] = score
-    return field_to_score
-
-
-def _preprocess_value(value: Any) -> Any:
-    if isinstance(value, str):
-        # for urls
-        return value.rstrip("/")
-
-    return value
-
-
-def evaluate_exact_match_fields(
-    outputs: dict, reference_outputs: dict
-) -> dict[str, float]:
-    return {
-        k: float(
-            _preprocess_value(outputs.get(k)) == _preprocess_value(reference_outputs[k])
-        )
-        for k in EXACT_MATCH_FIELDS
-        if k in reference_outputs
-    }
-
-
-def evaluate_long_text_fields(outputs: dict, reference_outputs: dict):
-    emb_distance_evaluator = LangChainStringEvaluator(
-        "embedding_distance", config={"distance": "cosine"}
-    )
-    return {
-        k: 1
-        - emb_distance_evaluator.evaluator.invoke(
-            {"prediction": outputs.get(k, ""), "reference": reference_outputs[k]}
-        )["score"]
-        for k in LONG_TEXT_FIELDS
-        if k in reference_outputs
-    }
-
-
-def evaluate_fuzzy_match_fields(outputs: dict, reference_outputs: dict):
-    return {
-        k: ratio(outputs.get(k, "").lower(), reference_outputs[k].lower())
-        for k in FUZZY_MATCH_FIELDS
-        if k in reference_outputs
-    }
-
-
-# effectively fraction of matching fields
-def evaluate_agent_old(outputs: dict, reference_outputs: dict):
-    if "info" not in outputs or not isinstance(outputs["info"], dict):
-        return 0.0
-
-    actual_company_info = outputs["info"]
-    expected_company_info = reference_outputs["info"]
-
-    results = {
-        **evaluate_numeric_fields(actual_company_info, expected_company_info),
-        **evaluate_exact_match_fields(actual_company_info, expected_company_info),
-        **evaluate_fuzzy_match_fields(actual_company_info, expected_company_info),
-    }
-    return sum(results.values()) / len(results)
-
 
 judge_llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0)
 
@@ -120,6 +35,9 @@ EVALUATION_PROMPT = f"""You are an evaluator tasked with assessing the accuracy 
 
 
 def evaluate_agent(outputs: dict, reference_outputs: dict):
+    if "info" not in outputs or not isinstance(outputs["info"], dict):
+        return 0.0
+
     class Score(BaseModel):
         """Evaluate the agent's output against the expected output."""
 
@@ -138,7 +56,7 @@ def evaluate_agent(outputs: dict, reference_outputs: dict):
             },
             {
                 "role": "user",
-                "content": f"Actual output: {outputs}\nExpected output: {reference_outputs}",
+                "content": f'Actual output: {outputs["info"]}\nExpected output: {reference_outputs["info"]}',
             },
         ]
     )
@@ -165,8 +83,7 @@ def transform_dataset_inputs(inputs: dict) -> dict:
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` in the README for reference on what the output should look like
-    # the agent outputs already match the dataset output schema, but you can add any additional processing here
-    return outputs
+    return {"info": outputs["info"]}
 
 
 def make_agent_runner(graph_id: str, agent_url: str):
