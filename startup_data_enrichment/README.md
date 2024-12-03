@@ -116,7 +116,21 @@ The dataset used can be found [here](https://smith.langchain.com/public/afabd12a
 
 ### Using the dataset
 
-To use the data from this dataset in your own project, you can create a new dataset with the same examples using the following command:
+To use the data from this dataset in your own project, you can:
+
+(1) clone the dataset using LangSmith SDK:
+
+```python
+from langsmith import Client
+client = Client()
+
+cloned_dataset = client.clone_public_dataset(
+    "https://smith.langchain.com/public/afabd12a-62fa-4c09-b083-6b1742b4cc3a/d",
+    dataset_name="Startup Data Enrichment"
+)
+```
+
+(2) create a new dataset with the same examples using the following command:
 
 ```shell
 python startup_data_enrichment/create_dataset.py
