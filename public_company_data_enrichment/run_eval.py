@@ -1,8 +1,10 @@
-from typing import Any, Optional
+import argparse
+from typing import Optional
 
-from Levenshtein import ratio
+from langchain_anthropic import ChatAnthropic
 from langsmith import Client, evaluate
-from langsmith.evaluation import LangChainStringEvaluator, EvaluationResults
+from langsmith.evaluation import EvaluationResults
+from pydantic import BaseModel, Field
 
 from langgraph.pregel.remote import RemoteGraph
 
@@ -16,95 +18,49 @@ EXACT_MATCH_FIELDS = (
     "linkedin_profile",
     "headquarters",
 )
-FUZZY_MATCH_FIELDS = ("name", "ceo")
-LONG_TEXT_FIELDS = ("description",)
+FUZZY_MATCH_FIELDS = ("name", "ceo", "description")
 
 DEFAULT_DATASET_NAME = "Public Company Data Enrichment"
 DEFAULT_GRAPH_ID = "company_maistro"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/f7dcd212-1bd9-4596-a630-acc6ac4ff2f6"
 
+judge_llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0)
 
-# evaluation helpers for different types of fields
+EVALUATION_PROMPT = f"""You are an evaluator tasked with assessing the accuracy of an agent's output compared to the expected output. Follow these instructions:
 
-
-def evaluate_numeric_fields(outputs: dict, reference_outputs: dict) -> dict[str, float]:
-    lower_bound = 1 - TOLERANCE
-    upper_bound = 1 + TOLERANCE
-    field_to_score = {}
-    for k in NUMERIC_FIELDS:
-        if k not in reference_outputs:
-            continue
-
-        raw_field_value = outputs.get(k, 0)
-        try:
-            score = float(
-                lower_bound
-                <= int(raw_field_value) / reference_outputs[k]
-                <= upper_bound
-            )
-        except ValueError:
-            score = 0.0
-
-        field_to_score[k] = score
-    return field_to_score
+1. **Numeric Fields Evaluation**: For fields {NUMERIC_FIELDS}, check if the agent's output is within 10% of the expected value. Score 1 if yes, 0 if no.
+2. **Exact Match Evaluation**: For fields {EXACT_MATCH_FIELDS}, check if the agent's output matches the expected output EXACTLY. Score 1 if yes, 0 if no.
+3. **Fuzzy Match Evaluation**: For fields {FUZZY_MATCH_FIELDS}, check if the agent's output matches the expected output APPROXIMATELY. Score 1 if yes, 0 if no.
+4. **Overall Evaluation**: Return final score that is a fraction of fields that have score of 1. For example, if 1/5 fields has score of 1, the final score is 0.2."""
 
 
-def _preprocess_value(value: Any) -> Any:
-    if isinstance(value, str):
-        # for urls
-        return value.rstrip("/")
-
-    return value
-
-
-def evaluate_exact_match_fields(
-    outputs: dict, reference_outputs: dict
-) -> dict[str, float]:
-    return {
-        k: float(
-            _preprocess_value(outputs.get(k)) == _preprocess_value(reference_outputs[k])
-        )
-        for k in EXACT_MATCH_FIELDS
-        if k in reference_outputs
-    }
-
-
-def evaluate_long_text_fields(outputs: dict, reference_outputs: dict):
-    emb_distance_evaluator = LangChainStringEvaluator(
-        "embedding_distance", config={"distance": "cosine"}
-    )
-    return {
-        k: 1
-        - emb_distance_evaluator.evaluator.invoke(
-            {"prediction": outputs.get(k, ""), "reference": reference_outputs[k]}
-        )["score"]
-        for k in LONG_TEXT_FIELDS
-        if k in reference_outputs
-    }
-
-
-def evaluate_fuzzy_match_fields(outputs: dict, reference_outputs: dict):
-    return {
-        k: ratio(outputs.get(k, "").lower(), reference_outputs[k].lower())
-        for k in FUZZY_MATCH_FIELDS
-        if k in reference_outputs
-    }
-
-
-# effectively fraction of matching fields
 def evaluate_agent(outputs: dict, reference_outputs: dict):
     if "info" not in outputs or not isinstance(outputs["info"], dict):
         return 0.0
 
-    actual_company_info = outputs["info"]
-    expected_company_info = reference_outputs["info"]
+    class Score(BaseModel):
+        """Evaluate the agent's output against the expected output."""
 
-    results = {
-        **evaluate_numeric_fields(actual_company_info, expected_company_info),
-        **evaluate_exact_match_fields(actual_company_info, expected_company_info),
-        **evaluate_fuzzy_match_fields(actual_company_info, expected_company_info),
-    }
-    return sum(results.values()) / len(results)
+        score: float = Field(
+            description="A score between 0 and 1 indicating the accuracy of the agent's output compared to the expected output. 1 is a perfect match."
+        )
+        reason: str = Field(
+            description="A brief explanation for why you scored the agent's output as you did."
+        )
+
+    score = judge_llm.with_structured_output(Score).invoke(
+        [
+            {
+                "role": "system",
+                "content": EVALUATION_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": f'Actual output: {outputs["info"]}\nExpected output: {reference_outputs["info"]}',
+            },
+        ]
+    )
+    return score.score
 
 
 def get_agent_metadata(graph_id: str, agent_url: str):
@@ -127,8 +83,7 @@ def transform_dataset_inputs(inputs: dict) -> dict:
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` in the README for reference on what the output should look like
-    # the agent outputs already match the dataset output schema, but you can add any additional processing here
-    return outputs
+    return {"info": outputs["info"]}
 
 
 def make_agent_runner(graph_id: str, agent_url: str):

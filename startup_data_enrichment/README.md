@@ -136,6 +136,12 @@ cloned_dataset = client.clone_public_dataset(
 python startup_data_enrichment/create_dataset.py
 ```
 
+## Evaluation Metric
+
+The extracted outputs are evaluated using LLM-as-a-judge that compares extracted and reference outputs for each company and produces a score between 0 and 1, where 1 is a perfect match and 0 is a complete mismatch.
+
+You can adjust the prompt and evaluation criteria in the `run_eval.py` script if you're adapting this to your own dataset.
+
 ## Invoking the agent
 
 The agent is invoked using a `RemoteGraph`:

@@ -114,14 +114,9 @@ python public_company_data_enrichment/create_dataset.py
 
 ## Evaluation Metric
 
-Currently there is a single evaluation metric: fraction of the fields that were correctly extracted (per company). Correctness is defined differently depending on the field type:
+The extracted outputs are evaluated using LLM-as-a-judge that compares extracted and reference outputs for each company and produces a score between 0 and 1, where 1 is a perfect match and 0 is a complete mismatch.
 
-- exact matches for fields like  `website`
-- fuzzy matches for fields like `company_name` / `ceo`
-- embedding similarity for fields like `description`
-- checking within a certain tolerance (+/- 10%) for fields like `employee_count`
-
-These can be adjusted in the `run_eval.py` script if you're adapting this to your own dataset.
+You can adjust the prompt and evaluation criteria in the `run_eval.py` script if you're adapting this to your own dataset.
 
 ## Invoking the agent
 
