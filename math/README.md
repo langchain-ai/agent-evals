@@ -57,7 +57,7 @@ High level, math agents are expected to take a math question and output the answ
 
 There is a standard math problems dataset for evaluation in LangSmith:
 
-- [Simple Math Problems Dataset](https://smith.langchain.com/public/4295b2cf-7a79-415d-97d0-b3639e990848/d). This dataset has a list of math problems to solve composed of questions and answers.
+- [Simple Math Problems Dataset](https://smith.langchain.com/public/4295b2cf-7a79-415d-97d0-b3639e990848/d). This dataset has a list of math problems consisting of questions and answers.
 
   Example input:
   ```json
