@@ -62,8 +62,8 @@ EVALUATION_PROMPT = f"""You are an evaluator tasked with assessing the accuracy 
 
 
 def evaluate_agent(outputs: dict, reference_outputs: dict):
-    if "info" not in outputs or not isinstance(outputs["info"], dict):
-        return 0.0
+    if "info" not in outputs:
+        raise ValueError("Agent output must contain 'info' key")
 
     class Score(BaseModel):
         """Evaluate the agent's output against the expected output."""
