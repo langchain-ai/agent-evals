@@ -102,11 +102,9 @@ python people_data_enrichment/create_dataset.py
 
 ## Evaluation Metric
 
-Currently there is a single evaluation metric: fraction of the fields that were correctly extracted (per person). Correctness is defined differently depending on the field type:
+The extracted outputs are evaluated using LLM-as-a-judge that compares extracted and reference outputs for each person and produces a score between 0 and 1, where 1 is a perfect match and 0 is a complete mismatch.
 
-- fuzzy matching for list of string fields such as `prior_companies`
-- fuzzy matches for fields like `role` / `current_company`
-- checking within a certain tolerance (+/- 15%) for `years_experience` field
+You can adjust the prompt and evaluation criteria in the `run_eval.py` script if you're adapting this to your own dataset.
 
 ## Invoking the agent
 
@@ -130,9 +128,9 @@ def transform_dataset_inputs(inputs: dict) -> dict:
     # see the `Example input` in the README for reference on what `inputs` dict should look like
     return {
         "person": {
-            "name": inputs["Person"],
-            "email": inputs["Work-Email"],
-            "linkedin": inputs["Linkedin"],
+            "name": inputs["name"],
+            "email": inputs["work_email"],
+            "linkedin": inputs["linkedin_profile"],
         },
         "extraction_schema": extraction_schema,
     }
@@ -142,7 +140,7 @@ def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` in the README for reference on what the output should look like
     # the agent outputs already match the dataset output schema, but you can add any additional processing here
-    return outputs
+    return {"info": outputs["my_agent_output_key"]}
 ```
 
 `transform_dataset_inputs` will be applied to LangSmith dataset inputs before invoking the agent, and `transform_agent_outputs` will be applied to the agent's response before it's compared to the expected output in the LangSmith eval dataset.

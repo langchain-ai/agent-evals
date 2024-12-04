@@ -1,16 +1,21 @@
-from langsmith import Client, evaluate
-from Levenshtein import ratio
-from langgraph.pregel.remote import RemoteGraph
-from typing import Optional
-from langsmith.evaluation import EvaluationResults
 import argparse
+from typing import Optional
+
+from langchain_anthropic import ChatAnthropic
+from langsmith import Client, evaluate
+from langsmith.evaluation import EvaluationResults
+from pydantic import BaseModel, Field
+
+from langgraph.pregel.remote import RemoteGraph
 
 # Defaults
 EXPERIMENT_PREFIX = "People mAIstro "
 TOLERANCE = 0.15  # should match within 15%
 NUMERIC_FIELDS = ("years_experience",)
-FUZZY_MATCH_FIELDS = ("role", "current_company")
-LIST_OF_STRING_FIELDS = ("prior_companies",)
+FUZZY_MATCH_FIELDS = ("role", "current_company",)
+LIST_FIELDS = ("prior_companies",)
+TOTAL_FIELDS = len(NUMERIC_FIELDS + FUZZY_MATCH_FIELDS + LIST_FIELDS)
+
 DEFAULT_DATASET_NAME = "People Data Enrichment"
 DEFAULT_GRAPH_ID = "people_maistro"
 DEFAULT_AGENT_URL = "https://langr.ph/marketplace/62bf5890-28fa-4dd1-b469-4751fe7ecdf3"
@@ -46,85 +51,43 @@ extraction_schema = {
 }
 
 
-def evaluate_list_of_string_fields(outputs: dict, reference_outputs: dict):
-    field_to_score = {}
-    for k in LIST_OF_STRING_FIELDS:
-        if k not in reference_outputs:
-            continue
+judge_llm = ChatAnthropic(model="claude-3-5-sonnet-latest", temperature=0)
 
-        output_list = outputs.get(k, [])
-        reference_list = reference_outputs[k].split(", ")
+EVALUATION_PROMPT = f"""You are an evaluator tasked with assessing the accuracy of an agent's output compared to the expected output. Follow these instructions:
 
-        # Convert to lists if needed
-        if isinstance(output_list, str):
-            output_list = [output_list]
-        if isinstance(reference_list, str):
-            reference_list = [reference_list]
-
-        # Convert to lowercase
-        output_list = [str(item).lower() for item in output_list]
-        reference_list = [str(item).lower() for item in reference_list]
-
-        if not output_list or not reference_list:
-            score = 0.0
-        else:
-            # For each reference item, find the best ratio match in output
-            scores = []
-            for ref_item in reference_list:
-                best_ratio = max(ratio(ref_item, out_item) for out_item in output_list)
-                scores.append(best_ratio)
-
-            # Average the ratios
-            score = sum(scores) / len(scores)
-
-        field_to_score[k] = score
-    return field_to_score
+1. **Numeric Fields Evaluation**: For fields {NUMERIC_FIELDS}, check if the agent's output is within 10% of the expected value. Score 1 if yes, 0 if no.
+2. **Fuzzy Match Evaluation**: For fields {FUZZY_MATCH_FIELDS}, check if the agent's output matches the expected output APPROXIMATELY. Score 1 if yes, 0 if no.
+3. **List Fields Evaluation**: For fields {LIST_FIELDS}, check if at least one item in the agent's output overlaps with the expected output. Score 1 if yes, 0 if no.
+4. **Overall Evaluation**: Return final score = number of fields with score of 1 / total number of fields ({TOTAL_FIELDS}). For example, if 1/{TOTAL_FIELDS} fields has score of 1, the final score is {1/TOTAL_FIELDS:.2f}."""
 
 
-def evaluate_numeric_fields(outputs: dict, reference_outputs: dict):
-    lower_bound = 1 - TOLERANCE
-    upper_bound = 1 + TOLERANCE
-    field_to_score = {}
-    for k in NUMERIC_FIELDS:
-        if k not in reference_outputs:
-            continue
-
-        raw_field_value = outputs.get(k, 0)
-        try:
-            score = float(
-                lower_bound
-                <= int(raw_field_value) / reference_outputs[k]
-                <= upper_bound
-            )
-        except ValueError:
-            score = 0.0
-
-        field_to_score[k] = score
-    return field_to_score
-
-
-def evaluate_fuzzy_match_fields(outputs: dict, reference_outputs: dict):
-    return {
-        k: ratio(outputs.get(k, "").lower(), reference_outputs[k].lower())
-        for k in FUZZY_MATCH_FIELDS
-        if k in reference_outputs
-    }
-
-
-# effectively fraction of matching fields
 def evaluate_agent(outputs: dict, reference_outputs: dict):
     if "info" not in outputs or not isinstance(outputs["info"], dict):
         return 0.0
 
-    actual_person_info = outputs["info"]
-    expected_person_info = reference_outputs
+    class Score(BaseModel):
+        """Evaluate the agent's output against the expected output."""
 
-    results = {
-        **evaluate_numeric_fields(actual_person_info, expected_person_info),
-        **evaluate_fuzzy_match_fields(actual_person_info, expected_person_info),
-        **evaluate_list_of_string_fields(actual_person_info, expected_person_info),
-    }
-    return sum(results.values()) / len(results)
+        score: float = Field(
+            description="A score between 0 and 1 indicating the accuracy of the agent's output compared to the expected output. 1 is a perfect match."
+        )
+        reason: str = Field(
+            description="A brief explanation for why you scored the agent's output as you did."
+        )
+
+    score = judge_llm.with_structured_output(Score).invoke(
+        [
+            {
+                "role": "system",
+                "content": EVALUATION_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": f'Actual output: {outputs["info"]}\nExpected output: {reference_outputs}',
+            },
+        ]
+    )
+    return score.score
 
 
 def transform_dataset_inputs(inputs: dict) -> dict:
@@ -143,8 +106,7 @@ def transform_dataset_inputs(inputs: dict) -> dict:
 def transform_agent_outputs(outputs: dict) -> dict:
     """Transform agent outputs to match the LangSmith dataset output schema."""
     # see the `Example output` in the README for reference on what the output should look like
-    # the agent outputs already match the dataset output schema, but you can add any additional processing here
-    return outputs
+    return {"info": outputs["info"]}
 
 
 def make_agent_runner(graph_id: str, agent_url: str):
